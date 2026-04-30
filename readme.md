@@ -1,12 +1,12 @@
 # Heideggerian AI Maze Solver
 
-An exploration of embodied cognition through two complementary agent simulations that demonstrate how complex behavior can emerge from simple reactive mechanisms — without explicit planning, maps, or goal representations.
+An exploration of embodied cognition through three complementary agent simulations that demonstrate different approaches to navigation and intelligence — from pure reflexes to symbolic planning.
 
 ## Overview
 
-This project implements two distinct agent simulations that explore different approaches to navigation and intelligence, both inspired by philosophical and psychological thought experiments about the nature of understanding and agency.
+This project implements three distinct agent simulations that explore different approaches to navigation and intelligence, inspired by philosophical and psychological thought experiments about the nature of understanding and agency.
 
-## The Two Simulations
+## The Three Simulations
 
 ### 1. Heideggerian Agent (`heideggerian_agent.py`)
 
@@ -40,16 +40,36 @@ The agent "flees" from or "approaches" light purely based on its sensor wiring �
 
 Both explore **embodied cognition** — intelligence without explicit planning or maps:
 
-| Aspect | Heideggerian Agent | Braitenberg Vehicle |
-|--------|-------------------|---------------------|
-| Sensing | Gradient field (distance-based) | Light intensity |
-| Navigation | Gradient-following | Sensor-driven reflexes |
-| Philosophy | Heidegger/Dreyfus | Braitenberg |
-| Limitation | Local minima traps | Can get stuck in light-rich areas |
+| Aspect | Heideggerian Agent | Braitenberg Vehicle | Symbolic Planner |
+|--------|-------------------|---------------------|------------------|
+| Sensing | Gradient field (distance-based) | Light intensity | None (uses internal model) |
+| Navigation | Gradient-following | Sensor-driven reflexes | A* path search |
+| Philosophy | Heidegger/Dreyfus | Braitenberg | Classical GOFAI |
+| World Model | None | None | Full grid discretization |
+| Limitation | Local minima traps | Can get stuck in light-rich areas | Model mismatch with reality |
 
-Together, they model how simple reactive systems can produce sophisticated-looking behavior purely from local sensing, without central planning.
+Together, they model the spectrum from pure reactivity to symbolic planning — showing how different architectures handle the same navigation problem.
 
-## Running the Simulations
+---
+
+### 3. Symbolic Planner (`planner.py`)
+
+A representation-driven agent: classical GOFAI (Good Old-Fashioned AI) in miniature.
+
+**Key Characteristics:**
+- **Complete world model** — The entire environment is discretized onto a grid
+- **Symbolic labels** — Every cell is labeled `wall` or `open`
+- **Explicit goal coordinates** — The planner is told where start and goal are in grid coordinates
+- **A* search** — Finds optimal path through the symbolic model
+- **Mechanical execution** — The "robot" then executes the path cell by cell
+
+**The Insight:** This is the architecture Dreyfus and Brooks criticized — a system that operates on an internal model of the world rather than coping with the world itself. The model is handed to it by the designer. There's no sensing during execution, no learning, no adaptation. All cognitive work happens upfront in symbol space, then plays back the result.
+
+The rasterization step — converting circular obstacles into wall cells on a grid — is itself a representational commitment. The planner does not perceive the continuous world; it perceives a symbolic discretization that the programmer constructed.
+
+---
+
+## Connection Between Them
 
 ### Requirements
 ```bash
@@ -66,6 +86,11 @@ python heideggerian_agent.py
 python braitenberg_vehicles.py
 ```
 
+### Run Symbolic Planner
+```bash
+python planner.py
+```
+
 ## Controls
 
 ### Heideggerian Agent
@@ -76,13 +101,19 @@ python braitenberg_vehicles.py
 - **Space** — Pause/Resume
 - **R** — Reset simulation
 
+### Symbolic Planner
+- **Space** — Pause/Resume
+- **R** — Generate new maze and replan
+
 ## Philosophical Context
 
-This project is inspired by a critique of classical AI's assumption that intelligence requires explicit representation and planning. Both approaches demonstrate that:
+This project is inspired by a critique of classical AI's assumption that intelligence requires explicit representation and planning. The three simulations demonstrate the spectrum of approaches:
 
-1. **Situatedness** — Agents can act effectively in the world without internal models of that world
-2. **Embodiment** — Intelligence emerges from sensorimotor coupling with the environment
-3. **Emergence** — Complex behaviors arise from simple rules
+| Approach | Philosophy | Key Insight |
+|----------|-----------|-------------|
+| **Reactive** | Heidegger/Brooks | Intelligence from sensorimotor coupling |
+| **Braitenberg** | Synthetic psychology | Complex behavior from simple wiring |
+| **Symbolic** | Classical GOFAI | All cognition happens in symbol space |
 
 This aligns with:
 - **Heidegger's** critique of Cartesian representation
@@ -96,13 +127,14 @@ This aligns with:
 Maze_solver/
 ├── heideggerian_agent.py    # Gradient-following reactive agent
 ├── braitenberg_vehicles.py  # Light-following vehicle simulation
-├── planner.py               # (Reserved for future path-planning extension)
+├── planner.py               # A* symbolic path planner (GOFAI)
 ├── readme.md                # This file
-└── requirements.txt         # Python dependencies
+└── requirements.txt        # Python dependencies
 ```
 
 ## Future Work
 
-- Implement a path-planning layer to overcome local minima
 - Hybrid architecture combining reactive + deliberative layers
+- Add sensing to the planner for real-time obstacle avoidance
+- Compare path efficiency vs. reactive robustness empirically
 - Explore more complex sensor fields (e.g., pheromone diffusion)
